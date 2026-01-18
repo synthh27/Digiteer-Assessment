@@ -70,5 +70,24 @@ namespace task_manager_api.Controllers
                 )
             );
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] AuthRequest request)
+        {
+            // FINDS USER BY EMAIL
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == request.Email);
+
+            // RETURNS 401 IF THE CREDENTIALS ARE INVALID
+            if (user is null || !Utility.VerifyPassword(request.Password, user.PasswordHash)) return Unauthorized("Invalid credentials.");
+
+            // GENERATES JWT TOKEN
+            var token = _jwtService.GenerateToken(user);
+
+            // RETURNS SUCCESS RESPONSE
+            return Ok(new AuthResponse(
+                "Login Successful.",
+                user.Id, user.Email, token)
+            );
+        }
     }
 }
