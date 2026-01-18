@@ -1,11 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
-
-using TaskManager.Models;
+using System.Diagnostics;
+using TaskManager.Base;
 using TaskManager.Data;
 using TaskManager.DTOs;
-using TaskManager.Base;
+using TaskManager.Models;
 namespace TaskManager.API
 {
     [Authorize]
@@ -43,13 +43,60 @@ namespace TaskManager.API
                 tasks));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] TaskItem task)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetByTaskId(int id)
         {
-            
-            _context.Tasks.Add(task);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = task.Id }, task);
+            // FETCHES TASK BY ID
+            var task = await _context.Tasks
+                .FirstOrDefaultAsync(t => t.Id == id && t.UserId == UserId);
+
+            // RETURNS 404 IF TASKS NOT FOUND
+            if (task == null) return NotFound("Task not found");
+
+            // RETURNS 200 WITH TASK
+            return Ok(task);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateTaskRequest request)
+        {
+            // GETS USER FROM DB
+            var currUser = await _context.Users.FirstAsync(u => u.Id == UserId);
+
+            // RETURNS 404 IF USER IS NULL
+            if (currUser is null) return NotFound("User not found");
+
+            //CREATE NEW TASK            
+            var newTask = new TaskItem
+            {
+                Title = request.Title,
+                UserId = UserId,
+                IsDone = false
+            };
+
+            try
+            {
+                // ADDS NEW TASK TO DATABASE
+                _context.Tasks.Add(newTask);
+                await _context.SaveChangesAsync();
+
+                // RETURN 201 WITH CREATED TASK
+                return CreatedAtAction(
+                    nameof(GetByTaskId),
+                    new { id = newTask.Id },
+                    new CreateTaskResponse(
+                        newTask.Id,
+                        newTask.Title,
+                        newTask.IsDone
+                    )
+                );
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error: {ex}");
+                // RETURN 400 IF FAILED TO SAVE TO DB
+                return BadRequest("Failed to save to db.");
+            }
         }
 
         [HttpPut("{id}")] 
