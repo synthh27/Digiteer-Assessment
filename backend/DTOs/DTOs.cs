@@ -1,4 +1,4 @@
-﻿namespace task_manager_api.DTOs
+﻿namespace TaskManager.DTOs
 {
     public class DTOs
     {
