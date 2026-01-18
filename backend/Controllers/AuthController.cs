@@ -1,16 +1,13 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
 using TaskManager.Data;
 using TaskManager.DTOs;
 using TaskManager.Helpers;
 using TaskManager.Models;
 using TaskManager.Services;
-using static TaskManager.DTOs.DTOs;
 
-namespace task_manager_api.Controllers
+
+namespace TaskManager.Controllers
 {
     [Route("api/auth")]
     [ApiController]
