@@ -1,17 +1,18 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 using TaskManager.Models;
 using TaskManager.Data;
-using Microsoft.AspNetCore.Authorization;
+using TaskManager.DTOs;
+using TaskManager.Base;
 namespace TaskManager.API
 {
     [Authorize]
     [Route("api/tasks")]
     [ApiController]
-    public class TasksController : ControllerBase
+
+    public class TasksController : BaseController
     {
         private readonly ApplicationDbContext _context;
 
@@ -23,9 +24,23 @@ namespace TaskManager.API
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            
-            var tasks = await _context.Tasks.ToListAsync();
-            return Ok(tasks);
+            // FETCHES ALL USER'S TASKS
+            var tasks = await _context.Tasks
+                .Where(t => t.UserId == UserId)
+                .Select(t => new TaskDTO(
+                    t.Id,
+                    t.Title,
+                    t.IsDone
+                ))
+                .ToListAsync();
+
+            // RETURNS 404 IF NO TASKS FOUND
+            if (tasks.Count == 0) return NotFound("No tasks found");
+
+            // RETURNS 200 WITH TASKS LIST
+            return Ok(new GetTasksResponse(
+                "Tasks fetched successfully",
+                tasks));
         }
 
         [HttpPost]
