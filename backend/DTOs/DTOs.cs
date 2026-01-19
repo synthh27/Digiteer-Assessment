@@ -18,7 +18,7 @@
     public record TaskDTO
     (
         int Id,
-        string Message,
+        string Title,
         bool IsDone
 
     );
