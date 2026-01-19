@@ -116,7 +116,7 @@ namespace TaskManager.API
             await _context.SaveChangesAsync();
 
             // RETURNS 200 FOR SUCCESSFUL UPDATE
-            return Ok("Tasks updated successfully.");
+            return Ok(new UpdateTaskResponse("Task updated successfully", new TaskDTO (task.Id, task.Title, task.IsDone)));
         }
 
         [HttpDelete("{id}")]
