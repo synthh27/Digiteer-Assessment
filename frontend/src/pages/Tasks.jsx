@@ -32,12 +32,8 @@ function Tasks() {
 
   const createTask = async (task) => {
     try {
-      console.log("creating task", task.title);
       const res = await api.post("/tasks", { title: task.title });
-      console.log("created", res.data.task);
       const createdTask = res.data.task;
-      console.log(createdTask);
-
       setTasks(prev => [...prev, createdTask]);
       setShowCreate(false);
     } catch (error) {
@@ -45,9 +41,21 @@ function Tasks() {
     }
   };
 
+  const editTask = async (task) => {
+    try {
+      const res = await api.patch(`/tasks/${task.id}`, { title: task.title });
+      const editedTask = res.data.task;
+      setTasks(prev => prev.map(t => t.id === editedTask.id ? editedTask : t));
+      setShowUpdate(false);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const removeTask = async (task) => {
     try {
       await api.delete(`/tasks/${task.id}`);
+      setTasks(prev => prev.filter(t => t.id !== task.id));
     } catch(error) {
       console.error(error);
     }
@@ -77,8 +85,9 @@ function Tasks() {
     fetchTasks();
   }
 
-  const updateTask = (updatedTask) => {
-    setTasks(tasks.map(t => (t.id === updatedTask.id ? updatedTask : t)));
+  const updateTask = async (updatedTask) => {
+    await editTask(updatedTask);
+    fetchTasks();
   };
 
   const deleteTask = async (task) => {
