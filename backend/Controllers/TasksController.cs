@@ -51,7 +51,7 @@ namespace TaskManager.API
                 .FirstOrDefaultAsync(t => t.Id == id && t.UserId == UserId);
 
             // RETURNS 404 IF TASKS NOT FOUND
-            if (task == null) return NotFound("Task not found");
+            if (task == null) return Ok("Task not found");
 
             // RETURNS 200 WITH TASK
             return Ok(task);
