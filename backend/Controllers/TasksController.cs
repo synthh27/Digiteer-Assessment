@@ -85,9 +85,12 @@ namespace TaskManager.API
                     nameof(GetByTaskId),
                     new { id = newTask.Id },
                     new CreateTaskResponse(
-                        newTask.Id,
-                        newTask.Title,
-                        newTask.IsDone
+                        "Task created successfully",
+                        new TaskDTO(
+                            newTask.Id,
+                            newTask.Title,
+                            newTask.IsDone
+                        )
                     )
                 );
             }
