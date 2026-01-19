@@ -22,17 +22,17 @@ namespace TaskManager.Controllers
             _jwtService = jwtService;
         }
 
-        [HttpGet("GetById{id}")]
-        private async Task<IActionResult> GetById(int id)
+        [HttpGet("GetById/{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            // GETS USER
             var user = await _context.Users.FindAsync(id);
 
-            //RETURN 404 IF USER DO NOT EXIST
-            if (user is null) return NotFound("User do not exist.");
+            if (user == null)
+                return NotFound("User does not exist.");
 
             return Ok(user);
         }
+
 
         [HttpPost("register")]
         public async Task<IActionResult> register(AuthRequest request)
