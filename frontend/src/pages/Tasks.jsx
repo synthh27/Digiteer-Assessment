@@ -30,6 +30,21 @@ function Tasks() {
     }
   }
 
+  const createTask = async (task) => {
+    try {
+      console.log("creating task", task.title);
+      const res = await api.post("/tasks", { title: task.title });
+      console.log("created", res.data.task);
+      const createdTask = res.data.task;
+      console.log(createdTask);
+
+      setTasks(prev => [...prev, createdTask]);
+      setShowCreate(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const removeTask = async (task) => {
     try {
       await api.delete(`/tasks/${task.id}`);
@@ -57,7 +72,10 @@ function Tasks() {
 
 
   // HANDLER FUNCTIONS
-  const addTask = (task) => setTasks([...tasks, task]);
+  const addTask = async (task) => {
+    createTask(task);
+    fetchTasks();
+  }
 
   const updateTask = (updatedTask) => {
     setTasks(tasks.map(t => (t.id === updatedTask.id ? updatedTask : t)));
