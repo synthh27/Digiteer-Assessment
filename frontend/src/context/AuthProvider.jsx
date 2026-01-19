@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('token', token);
     const decoded = jwtDecode(token);
     setUser(decoded);
-    navigate('/tasks'); // redirect after login
+    navigate('/tasks');
   };
 
   const logout = () => {

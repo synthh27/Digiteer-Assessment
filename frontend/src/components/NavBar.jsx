@@ -17,11 +17,9 @@ function Navbar() {
   return (
     <nav className="w-full bg-gray-800 py-1 float-left flex justify-center items-center shadow-md">
       <div className="w-4/5 flex flex-row justify-between items-center py-2">
-        {/* Title */}
         <h1 className="text-2xl font-bold tracking-wide">
           📝 React Task Evaluator
         </h1>
-        {/* Button */}
         {isLoggedIn && (
           <button
             onClick={logoutUser}

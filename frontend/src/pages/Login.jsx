@@ -1,15 +1,9 @@
 
 import {useContext, useState} from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { isValidEmail } from "../helpers/Helpers.js";
 import AuthContext  from "../context/AuthContext.jsx";
 import api from "../api/axios.js";
-
-// DUMMY DATA
-const dummyUser = {
-  email: "test@example.com",
-  password: "Password123",
-};
 
 const Login = () => {
   // const navigate = useNavigate();
@@ -23,16 +17,10 @@ const Login = () => {
     e.preventDefault();
     try {
       // SET ERROR MESSAGE IF INVALID EMAIL
-      // if (!isValidEmail(email)) {
-      //   setError("Please enter a valid email address.");
-      //   return;
-      // }
-
-      // // SET ERROR MESSAGE IF INCORRECT CREDENTIALS
-      // if (email !== dummyUser.email || password !== dummyUser.password) {
-      //   setError("Invalid email or password.");
-      //   return;
-      // }
+      if (!isValidEmail(email)) {
+        setError("Please enter a valid email address.");
+        return;
+      }
 
       const res = await api.post('/auth/login', { email, password });
       login(res.data.token);
@@ -40,26 +28,6 @@ const Login = () => {
       setError(err.response?.data?.message || 'Login failed');
     }
   };
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   setError(null);
-  //
-  //   // SET ERROR MESSAGE IF INVALID EMAIL
-  //   if (!isValidEmail(email)) {
-  //     setError("Please enter a valid email address.");
-  //     return;
-  //   }
-  //
-  //   // SET ERROR MESSAGE IF INCORRECT CREDENTIALS
-  //   if (email !== dummyUser.email || password !== dummyUser.password) {
-  //     setError("Invalid email or password.");
-  //     return;
-  //   }
-  //
-  //   // LOGIN USER AND NAVIGATE TO TASKS
-  //   localStorage.setItem("token", "dummy-jwt-token");
-  //   navigate("/tasks");
-  // };
 
   return (
     <div className="min-h-screen flex items-center justify-center">

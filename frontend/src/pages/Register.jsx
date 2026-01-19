@@ -1,6 +1,7 @@
 import {isValidEmail, isValidPassword} from "../helpers/Helpers.js";
 import {useNavigate, Link} from "react-router-dom";
 import {useState} from "react";
+import api from "../api/axios.js";
 
 export function Register() {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ export function Register() {
   const [error, setError] = useState("");
 
   // Validations
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
@@ -33,8 +34,23 @@ export function Register() {
     }
 
     // REGISTER USER
-    localStorage.setItem("registeredUser", JSON.stringify({email, password}));
-    navigate("/login");
+    try {
+      const response = await api.post("/auth/register", {
+        email,
+        password,
+      });
+
+      // SUCCESSFUL REGISTRATION
+      if (response.status === 201 || response.status === 200) {
+        navigate("/login");
+      }
+    } catch (err) {
+      if (err.response) {
+        setError(err.response.data.message || "Registration failed");
+      } else {
+        setError("Unable to connect to server. Please try again.");
+      }
+    }
   }
 
   return (
