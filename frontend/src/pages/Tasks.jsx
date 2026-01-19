@@ -6,19 +6,8 @@ import DeleteTaskModal from "../components/DeleteTaskModal.jsx";
 import AuthContext from "../context/AuthContext";
 import api from "../api/axios.js";
 
-// DUMMY DATA (use consistent casing)
-const dummyData = [
-  { id: 1, title: "Study JWT", isDone: true },
-  { id: 2, title: "Fix BE Methods", isDone: true },
-  { id: 3, title: "Add Protected Routes", isDone: false },
-  { id: 4, title: "Create Missing Screens", isDone: false },
-  { id: 5, title: "Create NavBar", isDone: true },
-  { id: 6, title: "Connect API", isDone: false },
-  { id: 7, title: "Submit Assessment", isDone: false },
-];
 
 function Tasks() {
-
   const { user } = useContext(AuthContext);
 
   const [tasks, setTasks] = useState([]);
@@ -30,7 +19,6 @@ function Tasks() {
   const [showCreate, setShowCreate] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
-
 
   // API FUNCTIONS
   const fetchTasks = async () => {
