@@ -1,12 +1,24 @@
 import './App.css'
-import Tasks from "./Tasks"
+import Navbar from "./components/NavBar.jsx";
+import Tasks from "./pages/Tasks.jsx"
+import Login from "./pages/Login.jsx";
+import Register from "./pages/Register.jsx";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 
 function App() {
   return (
-    <div className="app">
-      <h1>📝 React Task Evaluator</h1>
-      <Tasks />
-    </div>
+
+      <BrowserRouter>
+        <Navbar />
+        <div className="w-full h-screen flex flex-col ">
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/tasks" element={<Tasks/>} />
+            <Route path="/login" element={<Login/>} />
+            <Route path="/register" element={<Register/>} />
+          </Routes>
+        </div>
+      </BrowserRouter>
   );
 }
 
