@@ -36,8 +36,15 @@ function Tasks() {
   const fetchTasks = async () => {
     try {
       const res = await api.get('/tasks');
-      console.log(res);
       setTasks(res.data.tasks);
+    } catch(error) {
+      console.error(error);
+    }
+  }
+
+  const removeTask = async (task) => {
+    try {
+      await api.delete(`/tasks/${task.id}`);
     } catch(error) {
       console.error(error);
     }
@@ -46,7 +53,6 @@ function Tasks() {
   const accomplishTasks = async (task) => {
     try {
       const res = await api.patch(`/tasks/${task.id}`, {isDone: !task.isDone});
-      console.log(res);
       const updatedTask = res.data.task;
       setTasks(prev =>
         prev.map(t => (t.id === updatedTask.id ? updatedTask : t))
@@ -69,12 +75,13 @@ function Tasks() {
     setTasks(tasks.map(t => (t.id === updatedTask.id ? updatedTask : t)));
   };
 
-  const deleteTask = (id) => {
-    setTasks(tasks.filter(t => t.id !== id));
+  const deleteTask = async (task) => {
+    await removeTask(task);
+    fetchTasks();
   };
 
-  const doneTask = async (id) => {
-    await accomplishTasks(id);
+  const doneTask = async (task) => {
+    await accomplishTasks(task);
     fetchTasks();
   };
 
