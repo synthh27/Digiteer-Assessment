@@ -1,40 +1,32 @@
 
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {useContext, useState} from "react";
+import { Link } from "react-router-dom";
 import { isValidEmail } from "../helpers/Helpers.js";
-
-// DUMMY DATA
-const dummyUser = {
-  email: "test@example.com",
-  password: "Password123",
-};
+import AuthContext  from "../context/AuthContext.jsx";
+import api from "../api/axios.js";
 
 const Login = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
+    try {
+      // SET ERROR MESSAGE IF INVALID EMAIL
+      if (!isValidEmail(email)) {
+        setError("Please enter a valid email address.");
+        return;
+      }
 
-    // SET ERROR MESSAGE IF INVALID EMAIL
-    if (!isValidEmail(email)) {
-      setError("Please enter a valid email address.");
-      return;
+      const res = await api.post('/auth/login', { email, password });
+      login(res.data.token);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed');
     }
-
-    // SET ERROR MESSAGE IF INCORRECT CREDENTIALS
-    if (email !== dummyUser.email || password !== dummyUser.password) {
-      setError("Invalid email or password.");
-      return;
-    }
-
-    // LOGIN USER AND NAVIGATE TO TASKS
-    localStorage.setItem("token", "dummy-jwt-token");
-    navigate("/tasks");
   };
 
   return (
@@ -45,7 +37,7 @@ const Login = () => {
         {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
 
         <input
-          type="email"
+          type="text"
           placeholder="Email"
           className="w-full border p-2 rounded mb-3"
           value={email}

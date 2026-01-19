@@ -51,7 +51,7 @@ namespace TaskManager.API
                 .FirstOrDefaultAsync(t => t.Id == id && t.UserId == UserId);
 
             // RETURNS 404 IF TASKS NOT FOUND
-            if (task == null) return NotFound("Task not found");
+            if (task == null) return Ok("Task not found");
 
             // RETURNS 200 WITH TASK
             return Ok(task);
@@ -85,9 +85,12 @@ namespace TaskManager.API
                     nameof(GetByTaskId),
                     new { id = newTask.Id },
                     new CreateTaskResponse(
-                        newTask.Id,
-                        newTask.Title,
-                        newTask.IsDone
+                        "Task created successfully",
+                        new TaskDTO(
+                            newTask.Id,
+                            newTask.Title,
+                            newTask.IsDone
+                        )
                     )
                 );
             }
@@ -116,7 +119,7 @@ namespace TaskManager.API
             await _context.SaveChangesAsync();
 
             // RETURNS 200 FOR SUCCESSFUL UPDATE
-            return Ok("Tasks updated successfully.");
+            return Ok(new UpdateTaskResponse("Task updated successfully", new TaskDTO (task.Id, task.Title, task.IsDone)));
         }
 
         [HttpDelete("{id}")]
