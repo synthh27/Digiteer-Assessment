@@ -22,8 +22,8 @@ namespace TaskManager.Controllers
             _jwtService = jwtService;
         }
 
-        [HttpGet("{id}")]
-        private async Task<IActionResult> Get(int id)
+        [HttpGet("GetById{id}")]
+        private async Task<IActionResult> GetById(int id)
         {
             // GETS USER
             var user = await _context.Users.FindAsync(id);
@@ -59,7 +59,7 @@ namespace TaskManager.Controllers
 
             // RETURN 201 CREATION SUCCESS RESPONSE
             return CreatedAtAction(
-                nameof(Get),
+                nameof(GetById),
                 new{ Id = newUser.Id },
                 new AuthResponse(
                     "User registered successfully.",
