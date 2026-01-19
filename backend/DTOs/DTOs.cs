@@ -15,18 +15,20 @@
         string Token
     );
 
-    public record TaskDTO
-    (
-        int Id,
-        string Message,
-        bool IsDone
-
-    );
 
     #endregion Auth DTOs
 
 
-    # region TASK DTOS
+    #region TASK DTOS
+
+    public record TaskDTO
+    (
+        int Id,
+        string Title,
+        bool IsDone
+
+    );
+
 
     public record GetTasksResponse
     (
@@ -41,15 +43,20 @@
 
     public record CreateTaskResponse
     (
-        int Id,
-        string Title,
-        bool IsDone
+        string? Message,
+        TaskDTO Task
     );
+
 
     public record UpdateTaskRequest
     (
         string? Title,
         bool? IsDone
+    );
+    public record UpdateTaskResponse
+    (
+        string? Message,
+        TaskDTO Task
     );
 
     #endregion TASKS DTOs

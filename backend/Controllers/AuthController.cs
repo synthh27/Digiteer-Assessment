@@ -22,17 +22,17 @@ namespace TaskManager.Controllers
             _jwtService = jwtService;
         }
 
-        [HttpGet("{id}")]
-        private async Task<IActionResult> Get(int id)
+        [HttpGet("GetById/{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            // GETS USER
             var user = await _context.Users.FindAsync(id);
 
-            //RETURN 404 IF USER DO NOT EXIST
-            if (user is null) return NotFound("User do not exist.");
+            if (user == null)
+                return NotFound("User does not exist.");
 
             return Ok(user);
         }
+
 
         [HttpPost("register")]
         public async Task<IActionResult> register(AuthRequest request)
@@ -59,7 +59,7 @@ namespace TaskManager.Controllers
 
             // RETURN 201 CREATION SUCCESS RESPONSE
             return CreatedAtAction(
-                nameof(Get),
+                nameof(GetById),
                 new{ Id = newUser.Id },
                 new AuthResponse(
                     "User registered successfully.",
