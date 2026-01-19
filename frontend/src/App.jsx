@@ -13,7 +13,7 @@ function App() {
       <BrowserRouter>
         <AuthProvider>
           <Navbar />
-          <div className="w-full h-screen flex flex-col ">
+          <div className="w-full h-screen flex flex-col justify-center items-center ">
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/login" element={<Login/>} />

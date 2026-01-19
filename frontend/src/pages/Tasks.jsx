@@ -101,7 +101,7 @@ function Tasks() {
   };
 
   return (
-    <section className='w-3/5 flex flex-col justify-center self-center bg-gray-900 px-8 py-4 rounded-lg '>
+    <section className='w-3/5 flex flex-col  bg-gray-900 px-8 py-4 rounded-lg '>
       <CreateTaskModal
         isOpen={showCreate}
         onClose={() => setShowCreate(false)}
@@ -127,7 +127,9 @@ function Tasks() {
         </h1>
         <button className='cursor-pointer' onClick={() => setShowCreate(true)}>➕ New</button>
       </div>
-      <div className=' text-left divide-y divide-gray-600'>
+      { tasks.length === 0 ? (
+        <h1 className='my-8 text-center text-xl font-bold'>No tasks for today!</h1>
+      ) : ( <div className=' text-left divide-y divide-gray-600'>
         {/* NOT DONE TASKS */}
         <ul className='py-4'>
           {notDoneTasks.map(task => (
@@ -170,7 +172,7 @@ function Tasks() {
             </li>
           ))}
         </ul>
-      </div>
+      </div>)}
     </section>
   );
 }
