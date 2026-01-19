@@ -43,9 +43,8 @@
 
     public record CreateTaskResponse
     (
-        int Id,
-        string Title,
-        bool IsDone
+        string? Message,
+        TaskDTO Task
     );
 
 
