@@ -17,7 +17,7 @@ function DeleteTaskModal({ isOpen, onClose, task, onDelete }) {
 
         <button
           onClick={() => {
-            onDelete(task.id);
+            onDelete(task);
             onClose();
           }}
           className="flex-1 bg-red-500 text-white py-2 rounded"
