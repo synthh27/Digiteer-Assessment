@@ -1,8 +1,10 @@
-import { useState } from "react";
+import {useContext, useEffect, useState} from "react";
 import ActionButton from "../components/ActionButtons.jsx";
 import CreateTaskModal from "../components/CreateTaskModal.jsx";
 import UpdateTaskModal from "../components/UpdateTaskModall.jsx";
 import DeleteTaskModal from "../components/DeleteTaskModal.jsx";
+import AuthContext from "../context/AuthContext";
+import api from "../api/axios.js";
 
 // DUMMY DATA (use consistent casing)
 const dummyData = [
@@ -16,7 +18,10 @@ const dummyData = [
 ];
 
 function Tasks() {
-  const [tasks, setTasks] = useState(dummyData);
+
+  const { user } = useContext(AuthContext);
+
+  const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
   const notDoneTasks = tasks.filter(task => !task.isDone);
   const doneTasks = tasks.filter(task => task.isDone);
@@ -25,6 +30,37 @@ function Tasks() {
   const [showCreate, setShowCreate] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
+
+
+  // API FUNCTIONS
+  const fetchTasks = async () => {
+    try {
+      const res = await api.get('/tasks');
+      console.log(res);
+      setTasks(res.data.tasks);
+    } catch(error) {
+      console.error(error);
+    }
+  }
+
+  const accomplishTasks = async (task) => {
+    try {
+      const res = await api.patch(`/tasks/${task.id}`, {isDone: !task.isDone});
+      console.log(res);
+      const updatedTask = res.data.task;
+      setTasks(prev =>
+        prev.map(t => (t.id === updatedTask.id ? updatedTask : t))
+      );
+    } catch(error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    if(!user) return;
+    fetchTasks();
+  }, [user]);
+
 
   // HANDLER FUNCTIONS
   const addTask = (task) => setTasks([...tasks, task]);
@@ -37,12 +73,9 @@ function Tasks() {
     setTasks(tasks.filter(t => t.id !== id));
   };
 
-  const doneTask = (id) => {
-    setTasks(
-      tasks.map(task =>
-        task.id === id ? { ...task, isDone: !task.isDone } : task
-      )
-    );
+  const doneTask = async (id) => {
+    await accomplishTasks(id);
+    fetchTasks();
   };
 
   return (
@@ -79,7 +112,7 @@ function Tasks() {
             <li key={task.id}
                 className='flex flex-row justify-between'>
               <div>
-                <input type="checkbox" className='mx-2 cursor-pointer' onClick={()=>doneTask(task.id)} />
+                <input type="checkbox" className='mx-2 cursor-pointer' onClick={()=>doneTask(task)} />
                 {task.title}
               </div>
               <ActionButton
@@ -102,7 +135,7 @@ function Tasks() {
             <li key={task.id}
                 className='flex flex-row justify-between text-gray-500'>
               <div>
-                <input type="checkbox" className='mx-2 cursor-pointer' disabled/>
+                <input type="checkbox" className='mx-2 cursor-pointer' onClick={()=>doneTask(task)}/>
                 {task.title}
               </div>
               <ActionButton
